@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
-
+const { user_details, register, login, logout }  = require('../controllers/userController');
+const {authorizationCheck } = require('../middlewares/auth') ;
 //Index all user route
-router.get('/', userController.user_details);
+router.get('/',user_details);
 
-// create user
-router.post('/create', userController.user_create);
+// user route
+router.post('/register', register);
+router.post('/login', login);
+router.post('/logout' ,logout);
 
-router.post('/singIn', userController.user_login);
+
 
 
 
