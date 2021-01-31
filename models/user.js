@@ -32,6 +32,13 @@ const userSchema = new Schema({
     },
 })
 
+// check if the user entered password matches
+// with the one in the database
+userSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+  };
+  
+
 // Fire a function After new data saved to DB 
 // **del**
 userSchema.post('save', (data, next)=>{
