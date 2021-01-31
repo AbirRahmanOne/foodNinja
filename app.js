@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose') ;
 const morgan = require('morgan');
 const connectDB = require('./config/db') ;
-const userRoute = require('./routes/userRoute');
+const userRoutes = require('./routes/user');
+const productRoutes = require('./routes/product');
 const app = express();
 
 require('dotenv').config()
@@ -18,8 +19,13 @@ app.use(express.json());
 
 
 // routes
-app.use("/api", userRoute);
+app.use("/api", userRoutes);
+app.use("/api", productRoutes);
+/*
+app.use("/api", menuRoutes);
+app.use("/api", orderRoutes);
 
+*/
 
 
 app.listen(port, async() => {
