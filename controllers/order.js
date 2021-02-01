@@ -1,7 +1,8 @@
 const Order = require("../models/order");
 const Product = require("../models/product");
-const product = require("../models/product");
+const user = require('../models/user')
 const { response } = require("express");
+const { requireLogin } = require("../middlewares/auth");
 
 exports.create = function (req, res) {
   Order.findOne({ user: req.user._id }).exec((error, order) => {
@@ -10,7 +11,7 @@ exports.create = function (req, res) {
       // if same user order 2nd time in current session
 
       const isProduct = order.orderItems.find(
-        (o) => o.item == req.body.orderItems.item
+        (cur) => cur.item == req.body.orderItems.item
       );
 
       if (isProduct) {
