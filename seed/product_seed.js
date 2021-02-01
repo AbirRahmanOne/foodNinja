@@ -1,4 +1,4 @@
-const Item = require("../model/product");
+const Product = require("../model/product");
 const mongoose = require("mongoose");
 const connectDB = require('../config/db')
 require("dotenv").config();
@@ -103,8 +103,8 @@ const product = [
 
 let count = 0;
 
-product.forEach((user) => {
-  user.save(async (err, result) => {
+product.forEach((item) => {
+  item.save(async (err, result) => {
     count++;
     if (count == product.length) {
       exit();

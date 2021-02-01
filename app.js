@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose') ;
 const morgan = require('morgan');
 const connectDB = require('./config/db') ;
+
+// import routes
 const userRoutes = require('./routes/user');
 const productRoutes = require('./routes/product');
 const menuRoutes = require('./routes/menu')
