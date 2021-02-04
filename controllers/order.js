@@ -1,85 +1,43 @@
 const Order = require("../models/order");
-const Product = require("../models/product");
-const user = require('../models/user')
 const { response } = require("express");
-const { requireLogin } = require("../middlewares/auth");
 
-exports.create = function (req, res) {
-  Order.findOne({ user: req.user._id }).exec((error, order) => {
-    if (error) return res.status(400).json({ error });
-    if (order) {
-      // if same user order 2nd time in current session
+const createOrder = function (req, res) {
 
-      const isProduct = order.orderItems.find(
-        (cur) => cur.item == req.body.orderItems.item
-      );
+  try {
 
-      if (isProduct) {
-        Order.findOneAndUpdate(
-          {
-            user: req.user._id,
-            "orderItems.item": req.body.orderItems.item,
-          },
-          {
-            $set: {
-              "orderItems.$": {
-                ...req.body.orderItems,
-                quantity: isProduct.quantity + req.body.orderItems.quantity,
-                price: isProduct.price + req.body.orderItems.price,
-              },
-            },
-          }
-        ).exec((error, _order) => {
-          if (error) return res.status(400).json({ error });
-          if (_order) {
-            return res.status(200).json({ order: _order });
-          }
-        });
-      } else {
-        Order.findOneAndUpdate(
-          { user: req.user._id },
-          {
-            $push: {
-              orderItems: req.body.orderItems,
-            },
-          }
-        ).exec((error, _order) => {
-          if (error) return res.status(400).json({ error });
-          if (_order) {
-            return res.status(200).json({ order: _order });
-          }
-        });
+    const order = new Order({
+      user: req.body.user_id,
+      orderItems: [req.body.orderItems],
+    });
+    
+    order.save((error, order) => {
+      console.log(error);
+      if (error) return res.status(400).json({ error });
+      if (order) {
+        return res.status(201).json({ order });
       }
-    } else {
-      const order = new Order({
-        user: req.user._id,
-        orderItems: [req.body.orderItems],
-        total_Price: req.body.orderItems.price,
-      });
+    });
 
-      order.save((error, order) => {
-        if (error) return res.status(400).json({ error });
-        if (order) {
-          return res.status(201).json({ order });
-        }
-      });
-    }
-  });
+
+  } catch (err){
+    res.status(500);
+    res.json( {errors: err})
+  }
+    
 };
 
-exports.getOrderItems = (req, res) => {
-  //const { user } = req.body.payload;
-  //if(user){
+const getOrderItems = (req, res) => {
+
   Order.findOne({ user: req.user._id })
-    //.populate("orderItems.item", "_id name price productPictures")
+
     .exec((error, order) => {
       if (error) return res.status(400).json({ error });
       if (order) {
         let orderItems = {};
-        order.orderItems.forEach((i, index) => {
-          orderItems[i.item._id.toString()] = {
-            _id: i.item._id.toString(),
-            qty: i.quantity,
+        order.orderItems.forEach(( curItem, index) => {
+          orderItems[curItem.item._id.toString()] = {
+            _id: curItem.item._id.toString(),
+            qty: curItem.quantity,
           };
         });
         res.status(200).json({ orderItems });
@@ -87,3 +45,10 @@ exports.getOrderItems = (req, res) => {
     });
   //}
 };
+
+module.exports = {
+  createOrder,
+  getOrderItems,
+
+
+}

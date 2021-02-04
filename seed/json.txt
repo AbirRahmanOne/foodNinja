@@ -1,0 +1,34 @@
+[
+    { 
+        "title": "Soup",
+        "price": 299,
+        "inStock": "yes",
+        "description": "SeaFood Soup",
+        "menu": "randommenutype04"
+
+    },
+    {
+        "title: "Soup",
+        "price": 499,
+        "inStock": "yes",
+        "description": "Cream of mushroom soup",
+        "menu": "randommenutype05"
+    },
+    {
+        "title": "Thai Fry Chicken",
+        "price": 350,
+        "inStock": "yes",
+        "description": "Thai Spicy Chicken Fry.",
+        "menu": "randommenutype06"
+    },
+    {
+       
+        "title": "Fried Rice",
+        "price": 199,
+        "inStock": "yes",
+        "description": "Thai Fried Rice.",
+        "menu": "randommenutype06"
+
+    }
+
+]

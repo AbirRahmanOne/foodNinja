@@ -4,14 +4,12 @@ const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
       required: true,
     },
     orderItems: [
       {
         item: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Food Item",
           required: true,
         },
         quantity: {
@@ -23,16 +21,12 @@ const orderSchema = new mongoose.Schema(
           required: true,
         },
         menu: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Menu",
+          type:String, 
+          required: true,
         },
       },
     ],
-    total_Price: {
-      type: Number,
-    },
-  },
-  { timestamps: true }
+  }
 );
 
 module.exports = mongoose.model("Order", orderSchema);

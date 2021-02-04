@@ -1,4 +1,4 @@
-const Product = require("../model/product");
+const Item = require("../model/product");
 const mongoose = require("mongoose");
 const connectDB = require('../config/db')
 require("dotenv").config();
@@ -6,8 +6,8 @@ require("dotenv").config();
 //connecting to db
 connectDB() ;
 
-const product = [
-  new Product({
+const item = [
+  new Item({
     id: 1,
     title: "Burger",
     price: 299,
@@ -16,7 +16,7 @@ const product = [
     menu: "randommenutype01",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 2,
     title: "Pasta",
     price: 350,
@@ -25,7 +25,7 @@ const product = [
     menu: "randommenutype02",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 3,
     title: "Pasta",
     price: 450,
@@ -34,17 +34,16 @@ const product = [
     menu: "randommenutype02",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 4,
     title: "Ramen",
     price: 499,
     inStock: "yes",
-   
     description: "Beef Spicy Ramen.",
     menu: "randommenutype03",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 5,
     title: "Ramen",
     price: 349,
@@ -53,7 +52,7 @@ const product = [
     menu: "randommenutype03",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 6,
     title: "Soup",
     price: 199,
@@ -62,7 +61,7 @@ const product = [
     menu: "randommenutype04",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 7,
     title: "Soup",
     price: 299,
@@ -71,7 +70,7 @@ const product = [
     menu: "randommenutype04",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 8,
     title: "Soup",
     price: 499,
@@ -80,7 +79,7 @@ const product = [
     menu: "randommenutype05",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 9,
     title: "Thai Fry Chicken",
     price: 350,
@@ -89,7 +88,7 @@ const product = [
     menu: "randommenutype06",
     createdAt: new Date(),
   }),
-  new Product({
+  new Item({
     id: 10,
     title: "Fried Rice",
     price: 199,
@@ -103,7 +102,7 @@ const product = [
 
 let count = 0;
 
-product.forEach((item) => {
+item.forEach((item) => {
   item.save(async (err, result) => {
     count++;
     if (count == product.length) {
