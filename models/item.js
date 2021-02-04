@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
+const itemSchema = new mongoose.Schema({
   id: {
     type: Number,
     required: true,
@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   inStock: {
-    type: String,
+    type: Boolean,
     required: true,
   },
   description: {
@@ -24,10 +24,8 @@ const productSchema = new mongoose.Schema({
     trim: true,
   },
   menu: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Menu",
+    type: String,
   },
-  createdAt: Date,
 });
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model("Item", itemSchema);

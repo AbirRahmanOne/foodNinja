@@ -25,7 +25,6 @@ const register = async(req,res) => {
         const { name, password, email, address } = req.body;
         const user =  new User({name, password, email, address}).save() ;
        
-       
         res.status(201).json({
             message: 'User Created Successfully',
         });
@@ -39,7 +38,6 @@ const register = async(req,res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(email);
         const user = await User.findOne({ email }); 
         console.log(user);
 
@@ -47,22 +45,16 @@ const login = async (req, res) => {
             message: "User Not Found!" 
         });
 
-        console.log(user);
-        // TDOD: check password
-        // Do login
-
-
         if ( user && (await user.matchPassword(password))){
             res.cookie('jwt_token', generateToken[user._id], {expiresIn: '1d'});
             res.json({
+                /*
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                */
                 token: generateToken(user._id),
             });
-
-
-
             
         }
         else{
@@ -72,7 +64,6 @@ const login = async (req, res) => {
         }
         
     } catch (err) {
-        console.log(err);
         res.status(500)
         res.json({ errors: err });
     }
