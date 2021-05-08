@@ -1,23 +1,20 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const createToken = require('../utils/createToken');
-const { options } = require('../routes/user');
-
-
 
 // create new user method 
 const signup = async (req,res) => {
     try{
         const user = new User(req.body);
-        user.save() ;       
+        const result = await user.save() ;
+        //Isuse Q::
         res.status(201).json({
             message: 'User Created Successfully!',
         });
     } catch(err){
         res.status(500).json({
-            error: `Server side errors.`
+            error: `Server side errors. # ${err.message}`
         });
     }
 }
@@ -54,14 +51,12 @@ const login = async (req, res) => {
     }
 }
 
-
 const logout = (req, res) =>{
     res.clearCookie("jwt_token");
     res.status(200).json({
         message: "logout Successfully"
     });
 }
-
 
 // show all register user 
 const getUsers = async (req,res)=>{
