@@ -2,7 +2,8 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
-const createToken = require('../utils/createToken')
+const createToken = require('../utils/createToken');
+const { options } = require('../routes/user');
 
 
 
@@ -82,10 +83,67 @@ const getUsers = async (req,res)=>{
     }
 }
 
+//update user method
+const updateUser = async (req, res)=>{
+    try {
+        const filter = { _id: req.params.id } ; 
+        const updatedData = {} ;
+
+        if( req.body.name ) updatedData.name = req.body.name ;
+        if( req.body.email ) updatedData.email = req.body.email ;
+        if( req.body.address ) updatedData.address = req.body.address ;
+        if( req.body.password){
+            const salt = await bcrypt.genSalt() ;
+            updatedData.password = await bcrypt.hash(req.body.password, salt) ;
+        }
+
+        const options = { new: true, upsert: false } ; 
+        const result = await User.findByIdAndUpdate(filter, updatedData, options);
+
+        res.status(201).json({
+            newData: result,
+            message: `User updated successfully`
+                
+        });
+        
+    } catch (err) {
+        res.status(501).json({
+            errors: `Server Side errors.`
+        });
+    }
+}
+
+// delete method
+const deleteUser = async (req, res)=>{
+
+    try {
+        const filter = { _id: req.params.id } ; 
+        const result = await User.findByIdAndDelete(filter) ;
+
+        if(result){
+            res.status(201).json({
+                message: 'User Deleted Successfully!'
+            });
+        }else{
+            res.status(501).json({
+                message: 'Already Deleted!'
+            });
+        }
+ 
+    } catch (err) {
+        res.status(500).json({
+            error: `There was a server side errors!`,
+        });
+    }
+
+}
+
 module.exports = {
-    getUsers,
     signup,
     login,
     logout,
+    getUsers,
+    updateUser,
+    deleteUser,
     
 }
