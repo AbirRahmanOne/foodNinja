@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { user_details, register, login, logout }  = require('../controllers/user');
+
+const { getUsers, signup, login, logout }  = require('../controllers/user');
 const {requireLogin } = require('../middlewares/auth') ;
+
+
 //Index all user route
-router.get('/',user_details);
+router.get('/user',getUsers);
 
 // user route
-router.post('/register', register);
+router.post('/register', signup);
 router.post('/login',login);
 router.post('/logout' ,logout);
-
-
-
-
 
 module.exports = router;
