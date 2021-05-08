@@ -2,70 +2,54 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
-const generateToken = require('../utils/generateToken')
+const createToken = require('../utils/createToken')
 
 
 
-// show all register user 
-// deleted **
-const user_details = (req,res)=>{
-    User.find().sort({createdAt: -1})
-    .then((data)=>{
-        res.status(200);
-        res.json(data);
-    })
-    .catch((err) => {
-        res.status(404).send(err);
-    })
-}
-
-// create new user funtion 
-const register = async(req,res) => {
+// create new user method 
+const signup = async (req,res) => {
     try{
-        const { name, password, email, address } = req.body;
-        const user =  new User({name, password, email, address}).save() ;
-       
+        const user = new User(req.body);
+        user.save() ;       
         res.status(201).json({
-            message: 'User Created Successfully',
+            message: 'User Created Successfully!',
         });
     } catch(err){
-        res.status(500)
-        res.json({ errors: err });
+        res.status(500).json({
+            error: `Server side errors.`
+        });
     }
 }
 
-// login function 
+// login methods 
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email }); 
-        console.log(user);
+        const user = await User.findOne( {email} ); 
 
-        if(!user) return res.json({
-            message: "User Not Found!" 
-        });
+        const isValid = await user.matchPassword(password) ;
+        const payload = {
+            id: user._id,
+            email: user.email,
+        }
 
-        if ( user && (await user.matchPassword(password))){
-            res.cookie('jwt_token', generateToken[user._id], {expiresIn: '1d'});
+        if ( user && isValid ){
+            res.cookie('jwt_token', createToken(payload), {expiresIn: '1d'});
             res.json({
-                /*
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                */
-                token: generateToken(user._id),
-            });
-            
+                token: createToken(payload),
+                message: `Login successful`
+            });      
         }
         else{
             res.status(401).json({
-                message: "Invalid login credentials",
-            })
+                "error": `Authetication failed!`
+            });
         }
         
     } catch (err) {
-        res.status(500)
-        res.json({ errors: err });
+        res.status(401).json({
+            "error": `Authentication failed!`
+        })
     }
 }
 
@@ -74,12 +58,33 @@ const logout = (req, res) =>{
     res.clearCookie("jwt_token");
     res.status(200).json({
         message: "logout Successfully"
-    })
+    });
+}
+
+
+// show all register user 
+const getUsers = async (req,res)=>{
+    try {
+        const data = await User.find().select({
+            //_id: 0,
+            __v:0,
+            password:0
+        }).limit(5) ;
+
+        res.status(501).json({
+            users: data,
+            message: 'All register users.[Limit 5]'
+        });
+    } catch (err) {
+        res.status(403).json({
+            errors: `Server side errors!`
+        });
+    }
 }
 
 module.exports = {
-    user_details,
-    register,
+    getUsers,
+    signup,
     login,
     logout,
     

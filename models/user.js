@@ -11,23 +11,22 @@ const userSchema = new Schema({
     name: {
         type: String,
         required: [true, 'name is required'],
-    
-    },
-    password: {
-        type: String,
-        required: [true, 'pass is required'],
-    
     },
     email: {
         type: String,
         required: [true, "Email is required"],
         unique:true,
         lowercase: true,
-        //validate: [isEmail, 'Please enter a valid email address']
-
+        validate: [isEmail, 'Please enter a valid email address']
     },
+    password: {
+        type: String,
+        required: [true, 'pass is required'],
+    
+    },
+
     address:{
-        type:String,
+        type: String,
         required:[true, 'Address fields is required']
     },
 })
@@ -40,7 +39,6 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   
 
 // Fire a function After new data saved to DB 
-// **del**
 userSchema.post('save', (data, next)=>{
     console.log('New user created and saved', data);
     next() ; // do this and go to next event
