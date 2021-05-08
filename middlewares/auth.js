@@ -1,27 +1,33 @@
 const jwt = require("jsonwebtoken");
 
-exports.requireLogin = (req, res, next) => {
-  const token = req.headers['authorization'];
-    if (!token) {
-        return res.status(403)
-            .json({
-                Error: 'Token Not Found'
+const authenticate = async (req, res, next )=>{
+    const { authorization } = req.headers ;
+    const token = authorization.split(' ')[1] ;
+
+    if( typeof token === 'undefined'){
+        res.status(403).json({ message: `not logging in` });
+        return ;
+    }
+    
+    try {
+        const payload = await jwt.verify(token, process.env.SECRET_KEY) ;
+        if(!payload){
+            res.status(403).json({
+                message: `Unauthorized, Please login first`
             });
-    } else {
-        jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-            if (err) {
-                return res.status(403)
-                    .json({
-                        Error: 'Token does not match'
-                    });
-            } else {
-                req.userData = {
-                    _id: decoded._id,
-                    name: decoded.name,
-                    email: decoded.email
-                }
-                next(); // go to next function
-            }
+        }else{
+            // next middlewares 
+            req.userData =  payload ;
+            next() ;
+        }
+        
+    } catch (error) {
+        res.status(401).json({
+            message: `Unauthorized, invalid token`
         });
     }
-};
+} 
+
+module.exports = {
+    authenticate
+}
